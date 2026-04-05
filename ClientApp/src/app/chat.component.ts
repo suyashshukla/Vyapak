@@ -81,7 +81,7 @@ import { MarkdownPipe } from './markdown.pipe';
       </div>
 
       <!-- Floating Input Area -->
-      <div class="p-6 bg-white border-t border-slate-100">
+      <div class="p-4 sm:p-6 bg-white border-t border-slate-100">
         <div class="max-w-4xl mx-auto relative group">
           <form (submit)="sendPrompt()" class="relative">
             <textarea 
@@ -91,16 +91,16 @@ import { MarkdownPipe } from './markdown.pipe';
               rows="1"
               placeholder="Message Vyapak AI..."
               (keydown.enter)="$event.preventDefault(); sendPrompt()"
-              class="w-full px-6 py-4 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none transition-all placeholder:text-slate-400 font-medium"
+              class="w-full px-4 sm:px-6 py-4 pr-28 sm:pr-36 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none transition-all placeholder:text-slate-400 font-medium"
               [disabled]="chatService.loading()"
             ></textarea>
             
-            <div class="absolute right-3 bottom-3 flex items-center space-x-2">
-               <div class="flex flex-col items-end mr-3">
+            <div class="absolute right-2 sm:right-3 bottom-3 flex items-center space-x-1.5 sm:space-x-2">
+               <div class="flex flex-col items-end mr-1 sm:mr-3">
                   <select 
                     [ngModel]="selectedModel()" 
                     (ngModelChange)="selectedModel.set($event)"
-                    class="text-[10px] font-bold text-slate-400 uppercase bg-transparent border-none focus:ring-0 cursor-pointer hover:text-brand-600 transition-colors"
+                    class="text-[10px] font-bold text-slate-400 uppercase bg-transparent border-none focus:ring-0 cursor-pointer hover:text-brand-600 transition-colors max-w-[80px] sm:max-w-none truncate"
                   >
                     @for (model of chatService.models(); track model) {
                       <option [value]="model">{{ model }}</option>
@@ -111,13 +111,13 @@ import { MarkdownPipe } from './markdown.pipe';
                <button 
                   type="submit"
                   [disabled]="!prompt().trim() || chatService.loading()"
-                  class="w-10 h-10 bg-brand-600 text-white rounded-xl flex items-center justify-center hover:bg-brand-700 transition-all disabled:opacity-30 disabled:grayscale shadow-lg shadow-brand-500/20 active:scale-90"
+                  class="w-9 h-9 sm:w-10 sm:h-10 bg-brand-600 text-white rounded-xl flex items-center justify-center hover:bg-brand-700 transition-all disabled:opacity-30 disabled:grayscale shadow-lg shadow-brand-500/20 active:scale-90"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
                 </button>
             </div>
           </form>
-          <p class="text-[10px] text-center text-slate-400 mt-3 uppercase tracking-widest font-bold">Vyapak AI may provide inaccurate info. Verify important facts.</p>
+          <p class="text-[9px] sm:text-[10px] text-center text-slate-400 mt-3 uppercase tracking-widest font-bold">Vyapak AI may provide inaccurate info. Verify important facts.</p>
         </div>
       </div>
     </div>

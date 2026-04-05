@@ -86,23 +86,23 @@ import { ChatService } from './chat.service';
           </div>
         } @else {
           <!-- Floating Header -->
-          <header class="h-16 glass flex items-center justify-between px-6 sticky top-0 z-10">
-            <div class="flex items-center space-x-4">
-              <button (click)="isSidebarOpen.set(!isSidebarOpen())" class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+          <header class="h-16 glass flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10 overflow-hidden">
+            <div class="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+              <button (click)="isSidebarOpen.set(!isSidebarOpen())" class="lg:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-lg">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
               </button>
-              <div class="flex items-center space-x-2">
-                <div [class]="'w-2 h-2 rounded-full ' + (chatService.isConnected() ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500')"></div>
-                <span class="text-sm font-semibold text-slate-700 uppercase tracking-wider">
-                  {{ chatService.isConnected() ? 'Live Connection' : 'Disconnected' }}
+              <div class="flex items-center space-x-1.5 sm:space-x-2 whitespace-nowrap">
+                <div [class]="'w-2 h-2 rounded-full flex-shrink-0 ' + (chatService.isConnected() ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500')"></div>
+                <span class="text-[10px] sm:text-sm font-bold sm:font-semibold text-slate-700 uppercase tracking-wider">
+                  {{ chatService.isConnected() ? 'Live' : 'Offline' }}<span class="hidden xs:inline ml-1">{{ chatService.isConnected() ? 'Connection' : '' }}</span>
                 </span>
               </div>
             </div>
             
-            <div class="flex items-center space-x-2">
-               <span class="text-xs font-bold text-slate-400 uppercase mr-2 tracking-widest">Model Hub</span>
-               <div class="px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-bold text-slate-600">
-                  {{ chatService.models().length }} Available
+            <div class="flex items-center space-x-2 flex-shrink-0">
+               <span class="hidden sm:inline text-xs font-bold text-slate-400 uppercase tracking-widest">Model Hub</span>
+               <div class="px-2 sm:px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-[10px] sm:text-xs font-bold text-slate-600 whitespace-nowrap">
+                  {{ chatService.models().length }} <span class="hidden xs:inline">Available</span><span class="xs:hidden">Models</span>
                </div>
             </div>
           </header>
