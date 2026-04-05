@@ -1,0 +1,16 @@
+# .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# SQLite
+*.db-shm
+*.db-wal
+
+# Angular build
+wwwroot/
+ClientApp/node_modules/
+ClientApp/dist/
