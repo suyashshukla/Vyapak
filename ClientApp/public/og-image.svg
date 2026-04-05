@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Neural Pattern -->
+  <g stroke="#38bdf8" stroke-width="2" stroke-opacity="0.2">
+    <circle cx="200" cy="200" r="100" fill="none" />
+    <circle cx="1000" cy="430" r="150" fill="none" />
+    <line x1="200" y1="200" x2="1000" y2="430" />
+    <line x1="200" y1="200" x2="600" y2="100" />
+    <line x1="1000" y1="430" x2="600" y2="500" />
+    <circle cx="600" cy="315" r="50" fill="none" stroke-opacity="0.4" />
+  </g>
+
+  <!-- Content -->
+  <g transform="translate(600, 315)" text-anchor="middle" font-family="sans-serif">
+    <rect x="-100" y="-100" width="200" height="200" rx="40" fill="#0ea5e9" filter="url(#glow)"/>
+    <path d="M0 -40L-30 20H0V60L30 -10H0V-40Z" fill="white" transform="scale(1.5)"/>
+    
+    <text y="180" font-size="72" font-weight="bold" fill="white">Vyapak AI</text>
+    <text y="240" font-size="24" fill="#38bdf8" letter-spacing="4">LOCAL OLLAMA BRIDGE</text>
+  </g>
+</svg>
