@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Vyapak AI | Local Ollama Bridge</title>
+  <title>Vyapak AI | Professional Local LLM Bridge</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -10,14 +10,14 @@
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="/">
-  <meta property="og:title" content="Vyapak AI | Local Ollama Bridge">
-  <meta property="og:description" content="Secure and modern web bridge for local Ollama models. Plug-and-play AI interface for your network.">
+  <meta property="og:title" content="Vyapak AI | Secure Local-First AI Bridge">
+  <meta property="og:description" content="A high-performance, professional bridge for local Ollama models. Privacy-first AI for developers and teams.">
   <meta property="og:image" content="/og-image.svg">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:title" content="Vyapak AI | Local Ollama Bridge">
-  <meta property="twitter:description" content="Secure and modern web bridge for local Ollama models. Plug-and-play AI interface for your network.">
+  <meta property="twitter:description" content="Secure and modern web bridge for local Ollama models. Privacy-first AI for developers and teams.">
   <meta property="twitter:image" content="/og-image.svg">
 
   <style>
@@ -27,42 +27,43 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background-color: #f1f5f9;
-      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
     .splash-logo {
       width: 80px;
       height: 80px;
-      background-color: #0ea5e9;
-      border-radius: 20px;
+      background-color: #7c3aed;
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.3);
+      box-shadow: 0 20px 25px -5px rgba(124, 58, 237, 0.2);
       margin-bottom: 24px;
-      animation: pulse 2s infinite ease-in-out;
+      animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
     }
     .splash-logo svg {
-      width: 48px;
-      height: 48px;
+      width: 42px;
+      height: 42px;
       color: white;
     }
     .splash-text {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 28px;
+      font-weight: 800;
       color: #0f172a;
-      letter-spacing: -0.025em;
+      letter-spacing: -0.04em;
     }
     .splash-sub {
-      font-size: 14px;
-      color: #64748b;
-      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      margin-top: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.2em;
     }
     @keyframes pulse {
       0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.05); opacity: 0.8; }
+      50% { transform: scale(1.08); opacity: 0.9; }
       100% { transform: scale(1); opacity: 1; }
     }
   </style>
@@ -72,11 +73,11 @@
     <div class="splash-container">
       <div class="splash-logo">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
         </svg>
       </div>
-      <div class="splash-text">Vyapak AI</div>
-      <div class="splash-sub">Initializing local bridge...</div>
+      <div class="splash-text">Vyapak <span style="color: #7c3aed;">AI</span></div>
+      <div class="splash-sub">Bootstrapping Interface</div>
     </div>
   </app-root>
 </body>
