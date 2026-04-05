@@ -11,25 +11,25 @@ import { MarkdownPipe } from './markdown.pipe';
   template: `
     <div class="flex flex-col h-full relative bg-white">
       <!-- Messages List -->
-      <div class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth" #scrollContainer>
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-8 scroll-smooth" #scrollContainer>
         @if (chatService.history().length === 0) {
-          <div class="max-w-3xl mx-auto h-full flex flex-col items-center justify-center space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div class="max-w-3xl mx-auto h-full flex flex-col items-center justify-center space-y-8 sm:space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div class="text-center space-y-4">
                <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-brand-100">
                   <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                </div>
-               <h1 class="text-4xl font-bold text-slate-900 tracking-tight">How can I help you today?</h1>
-               <p class="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">Vyapak AI is connected to your local Ollama server. Ask anything or choose a suggestion below.</p>
+               <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight px-4">How can I help you today?</h1>
+               <p class="text-slate-500 text-base sm:text-lg max-w-lg mx-auto leading-relaxed px-4">Vyapak AI is connected to your local Ollama server. Ask anything or choose a suggestion below.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-2xl px-4">
               @for (suggestion of suggestions; track suggestion.title) {
                 <button 
                   (click)="prompt.set(suggestion.text); sendPrompt()"
-                  class="p-6 text-left bg-slate-50 border border-slate-200 rounded-2xl hover:border-brand-400 hover:bg-brand-50/30 transition-all group shadow-sm hover:shadow-md"
+                  class="p-4 sm:p-6 text-left bg-slate-50 border border-slate-200 rounded-2xl hover:border-brand-400 hover:bg-brand-50/30 transition-all group shadow-sm hover:shadow-md"
                 >
-                  <h3 class="font-bold text-slate-900 mb-1 group-hover:text-brand-700">{{ suggestion.title }}</h3>
-                  <p class="text-sm text-slate-500 leading-relaxed">{{ suggestion.description }}</p>
+                  <h3 class="font-bold text-slate-900 mb-1 group-hover:text-brand-700 text-sm sm:text-base">{{ suggestion.title }}</h3>
+                  <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">{{ suggestion.description }}</p>
                 </button>
               }
             </div>
@@ -40,7 +40,7 @@ import { MarkdownPipe } from './markdown.pipe';
           @for (msg of chatService.history(); track msg.id) {
             <!-- User Message -->
             <div class="flex flex-col items-end group">
-              <div class="chat-bubble-user">
+              <div class="chat-bubble-user max-w-[90%] sm:max-w-[85%]">
                 {{ msg.prompt }}
               </div>
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 mr-2 opacity-0 group-hover:opacity-100 transition-opacity">You</span>
@@ -49,12 +49,12 @@ import { MarkdownPipe } from './markdown.pipe';
             <!-- AI Message -->
             @if (msg.response) {
               <div class="flex flex-col items-start group">
-                <div class="w-full flex space-x-4">
+                <div class="w-full flex space-x-3 sm:space-x-4">
                   <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 mt-1">
                     <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   </div>
-                  <div class="flex-1 space-y-3">
-                    <div class="chat-bubble-ai markdown-content w-full" [innerHTML]="msg.response | markdown | async"></div>
+                  <div class="flex-1 min-w-0 space-y-3">
+                    <div class="chat-bubble-ai markdown-content w-full max-w-none sm:max-w-[90%] lg:max-w-[85%]" [innerHTML]="msg.response | markdown | async"></div>
                     <div class="flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button (click)="copyToClipboard(msg.response)" class="text-[10px] font-bold text-slate-400 hover:text-brand-600 uppercase tracking-widest flex items-center space-x-1">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>

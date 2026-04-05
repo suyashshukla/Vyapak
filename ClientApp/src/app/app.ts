@@ -28,22 +28,28 @@ import { ChatService } from './chat.service';
       }
 
       <!-- Sidebar -->
+      @if (isSidebarOpen()) {
+        <div (click)="isSidebarOpen.set(false)" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-30 lg:hidden animate-in fade-in duration-300"></div>
+      }
       <aside 
-        [class]="'w-80 bg-slate-900 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-800 relative z-20 ' + (isSidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')"
+        [class]="'fixed lg:static inset-y-0 left-0 w-80 bg-slate-900 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-800 z-40 ' + (isSidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')"
       >
         <!-- Logo Section -->
-        <div class="p-6 border-b border-slate-800/50">
+        <div class="p-6 border-b border-slate-800/50 flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-900/20">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
             <span class="text-xl font-bold text-white tracking-tight">Vyapak <span class="text-brand-400">AI</span></span>
           </div>
+          <button (click)="isSidebarOpen.set(false)" class="lg:hidden p-2 text-slate-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
         </div>
 
         <!-- Navigation & History -->
         <div class="flex-1 overflow-hidden flex flex-col p-4 space-y-6">
-          <button (click)="activeTab.set('chat')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-brand-600/10 text-brand-400 border border-brand-500/20 hover:bg-brand-600/20 transition-all group">
+          <button (click)="setActiveTab('chat')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-brand-600/10 text-brand-400 border border-brand-500/20 hover:bg-brand-600/20 transition-all group">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
             <span class="font-semibold">New conversation</span>
           </button>
@@ -55,7 +61,7 @@ import { ChatService } from './chat.service';
 
         <!-- Footer Settings -->
         <div class="p-4 border-t border-slate-800/50">
-           <button (click)="activeTab.set('guide')" [class]="'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ' + (activeTab() === 'guide' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200')">
+           <button (click)="setActiveTab('guide')" [class]="'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ' + (activeTab() === 'guide' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200')">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             <span class="font-medium text-sm">Developer Guide</span>
           </button>
@@ -123,5 +129,10 @@ export class App implements OnInit {
 
   ngOnInit() {
     this.chatService.loadModels();
+  }
+
+  setActiveTab(tab: 'chat' | 'guide') {
+    this.activeTab.set(tab);
+    this.isSidebarOpen.set(false);
   }
 }
