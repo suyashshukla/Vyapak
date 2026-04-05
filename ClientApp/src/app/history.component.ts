@@ -38,12 +38,14 @@ import { ChatService } from './chat.service';
       <div class="px-4 py-6 bg-slate-800/30 rounded-2xl border border-slate-800/50">
          <div class="flex items-center justify-between mb-4">
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Environment</span>
-            <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span [class]="'flex h-2 w-2 rounded-full ' + (chatService.isConnected() ? 'bg-emerald-500' : 'bg-rose-500')"></span>
          </div>
          <div class="space-y-3">
             <div class="flex justify-between items-center text-xs">
                <span class="text-slate-400">Ollama Status</span>
-               <span class="text-emerald-400 font-bold">Active</span>
+               <span [class]="'font-bold ' + (chatService.isConnected() ? 'text-emerald-400' : 'text-rose-400')">
+                  {{ chatService.isConnected() ? 'Active' : 'Inactive' }}
+               </span>
             </div>
             <div class="flex justify-between items-center text-xs">
                <span class="text-slate-400">Local Models</span>

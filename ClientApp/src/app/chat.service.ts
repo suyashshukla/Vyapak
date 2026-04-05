@@ -21,9 +21,12 @@ export class ChatService {
   loading = signal<boolean>(false);
   modelsFetched = signal<boolean>(false);
   
-  // Track multiple concurrent requests if needed, or just a boolean
+  isConnected = computed(() => this.modelsFetched() && this.models().length > 0);
+  
+  // Global processing only tracks background requests (models, history)
+  // 'loading' is reserved for chat messages to show local indicators
   private activeRequests = signal<number>(0);
-  isProcessing = computed(() => this.activeRequests() > 0 || this.loading());
+  isProcessing = computed(() => this.activeRequests() > 0);
 
   private startRequest() {
     this.activeRequests.update(v => v + 1);
@@ -56,10 +59,28 @@ export class ChatService {
 
   sendMessage(prompt: string, model?: string): Observable<ChatMessage> {
     this.loading.set(true);
+    
+    // Create an optimistic temporary message
+    const tempId = -Date.now();
+    const tempMsg: ChatMessage = {
+      id: tempId,
+      prompt: prompt,
+      response: '', // Empty response while loading
+      createdAt: new Date().toISOString()
+    };
+    
+    // Add to history immediately
+    this.history.update(h => [...h, tempMsg]);
+
     return this.http.post<ChatMessage>(`${this.apiUrl}/chat`, { prompt, model }).pipe(
       tap(msg => {
-        // Append for chronological chat order
-        this.history.update(h => [...h, msg]);
+        // Replace the temporary message with the real one from the server
+        this.history.update(h => h.map(m => m.id === tempId ? msg : m));
+      }),
+      catchError(err => {
+        // Remove the temporary message on error
+        this.history.update(h => h.filter(m => m.id !== tempId));
+        throw err;
       }),
       finalize(() => this.loading.set(false))
     );

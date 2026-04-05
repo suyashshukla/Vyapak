@@ -47,23 +47,25 @@ import { MarkdownPipe } from './markdown.pipe';
             </div>
 
             <!-- AI Message -->
-            <div class="flex flex-col items-start group">
-              <div class="w-full flex space-x-4">
-                <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 mt-1">
-                  <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                </div>
-                <div class="flex-1 space-y-3">
-                  <div class="chat-bubble-ai markdown-content w-full" [innerHTML]="msg.response | markdown | async"></div>
-                  <div class="flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button (click)="copyToClipboard(msg.response)" class="text-[10px] font-bold text-slate-400 hover:text-brand-600 uppercase tracking-widest flex items-center space-x-1">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                      <span>Copy</span>
-                    </button>
-                    <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ msg.createdAt | date:'shortTime' }}</span>
+            @if (msg.response) {
+              <div class="flex flex-col items-start group">
+                <div class="w-full flex space-x-4">
+                  <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 mt-1">
+                    <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  </div>
+                  <div class="flex-1 space-y-3">
+                    <div class="chat-bubble-ai markdown-content w-full" [innerHTML]="msg.response | markdown | async"></div>
+                    <div class="flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button (click)="copyToClipboard(msg.response)" class="text-[10px] font-bold text-slate-400 hover:text-brand-600 uppercase tracking-widest flex items-center space-x-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                        <span>Copy</span>
+                      </button>
+                      <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ msg.createdAt | date:'shortTime' }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            }
           }
         </div>
 

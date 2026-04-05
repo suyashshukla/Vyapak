@@ -27,58 +27,58 @@ import { ChatService } from './chat.service';
         </div>
       }
 
-      @if (chatService.modelsFetched() && chatService.models().length === 0) {
-        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in zoom-in duration-500">
-          <div class="w-24 h-24 bg-amber-50 rounded-3xl flex items-center justify-center mb-6 border border-amber-100 shadow-inner">
-            <svg class="w-12 h-12 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 15.3c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+      <!-- Sidebar -->
+      <aside 
+        [class]="'w-80 bg-slate-900 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-800 relative z-20 ' + (isSidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')"
+      >
+        <!-- Logo Section -->
+        <div class="p-6 border-b border-slate-800/50">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-900/20">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </div>
+            <span class="text-xl font-bold text-white tracking-tight">Vyapak <span class="text-brand-400">AI</span></span>
           </div>
-          <h2 class="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Connection Required</h2>
-          <p class="text-slate-600 max-w-md mb-8 leading-relaxed">Vyapak AI couldn't find a running Ollama instance on your machine. Please start Ollama and try again.</p>
-          <button (click)="chatService.loadModels()" class="btn-primary flex items-center space-x-2 px-8 py-3 rounded-xl">
-            <span>Verify Connection</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        </div>
+
+        <!-- Navigation & History -->
+        <div class="flex-1 overflow-hidden flex flex-col p-4 space-y-6">
+          <button (click)="activeTab.set('chat')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-brand-600/10 text-brand-400 border border-brand-500/20 hover:bg-brand-600/20 transition-all group">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+            <span class="font-semibold">New conversation</span>
+          </button>
+          
+          <div class="flex-1 overflow-y-auto scrollbar-hide">
+            <app-history></app-history>
+          </div>
+        </div>
+
+        <!-- Footer Settings -->
+        <div class="p-4 border-t border-slate-800/50">
+           <button (click)="activeTab.set('guide')" [class]="'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ' + (activeTab() === 'guide' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            <span class="font-medium text-sm">Developer Guide</span>
           </button>
         </div>
-      } @else {
-        <!-- Sidebar -->
-        <aside 
-          [class]="'w-80 bg-slate-900 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-800 relative z-20 ' + (isSidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')"
-        >
-          <!-- Logo Section -->
-          <div class="p-6 border-b border-slate-800/50">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-900/20">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              </div>
-              <span class="text-xl font-bold text-white tracking-tight">Vyapak <span class="text-brand-400">AI</span></span>
-            </div>
-          </div>
+      </aside>
 
-          <!-- Navigation & History -->
-          <div class="flex-1 overflow-hidden flex flex-col p-4 space-y-6">
-            <button (click)="activeTab.set('chat')" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-brand-600/10 text-brand-400 border border-brand-500/20 hover:bg-brand-600/20 transition-all group">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              <span class="font-semibold">New conversation</span>
-            </button>
-            
-            <div class="flex-1 overflow-y-auto scrollbar-hide">
-              <app-history></app-history>
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col min-w-0 bg-white relative">
+        @if (chatService.modelsFetched() && chatService.models().length === 0) {
+          <div class="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in zoom-in duration-500">
+            <div class="w-24 h-24 bg-amber-50 rounded-3xl flex items-center justify-center mb-6 border border-amber-100 shadow-inner">
+              <svg class="w-12 h-12 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 15.3c-.77 1.333.192 3 1.732 3z" />
+              </svg>
             </div>
-          </div>
-
-          <!-- Footer Settings -->
-          <div class="p-4 border-t border-slate-800/50">
-             <button (click)="activeTab.set('guide')" [class]="'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ' + (activeTab() === 'guide' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200')">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-              <span class="font-medium text-sm">Developer Guide</span>
+            <h2 class="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Connection Required</h2>
+            <p class="text-slate-600 max-w-md mb-8 leading-relaxed">Vyapak AI couldn't find a running Ollama instance on your machine. Please start Ollama and try again.</p>
+            <button (click)="chatService.loadModels()" class="btn-primary flex items-center space-x-2 px-8 py-3 rounded-xl">
+              <span>Verify Connection</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             </button>
           </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col min-w-0 bg-white relative">
+        } @else {
           <!-- Floating Header -->
           <header class="h-16 glass flex items-center justify-between px-6 sticky top-0 z-10">
             <div class="flex items-center space-x-4">
@@ -86,8 +86,10 @@ import { ChatService } from './chat.service';
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
               </button>
               <div class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span class="text-sm font-semibold text-slate-700 uppercase tracking-wider">Live Connection</span>
+                <div [class]="'w-2 h-2 rounded-full ' + (chatService.isConnected() ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500')"></div>
+                <span class="text-sm font-semibold text-slate-700 uppercase tracking-wider">
+                  {{ chatService.isConnected() ? 'Live Connection' : 'Disconnected' }}
+                </span>
               </div>
             </div>
             
@@ -109,8 +111,8 @@ import { ChatService } from './chat.service';
               </div>
             }
           </div>
-        </main>
-      }
+        }
+      </main>
     </div>
   `
 })
