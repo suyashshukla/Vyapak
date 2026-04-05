@@ -7,36 +7,49 @@ import { ChatService } from './chat.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="h-full bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-      <div class="p-4 border-b border-slate-100 bg-slate-50">
-        <h2 class="font-semibold text-slate-800 flex items-center">
-          <svg class="w-5 h-5 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          History (Today)
-        </h2>
-      </div>
-      <div class="flex-1 overflow-y-auto">
-        @if (reversedHistory().length === 0) {
-          <div class="p-8 text-center text-slate-400 text-sm">
-            No history yet
-          </div>
-        }
-        <ul class="divide-y divide-slate-100">
-          @for (item of reversedHistory(); track item.id) {
-            <li class="p-4 hover:bg-slate-50 transition-colors cursor-pointer group">
-              <div class="text-xs text-slate-400 mb-1">
-                {{ item.createdAt | date:'shortTime' }}
-              </div>
-              <div class="text-sm font-medium text-slate-700 truncate group-hover:text-primary-600">
-                {{ item.prompt }}
-              </div>
-              <div class="text-xs text-slate-500 truncate mt-1">
-                {{ item.response }}
-              </div>
-            </li>
+    <div class="flex flex-col space-y-8">
+      <!-- Section: Today -->
+      <div class="space-y-2">
+        <h3 class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Recent Conversations</h3>
+        <div class="space-y-1">
+          @if (reversedHistory().length === 0) {
+            <div class="px-4 py-8 text-center border border-dashed border-slate-800 rounded-xl">
+               <p class="text-xs text-slate-500 font-medium">No history found</p>
+            </div>
           }
-        </ul>
+          @for (item of reversedHistory(); track item.id) {
+            <button class="w-full text-left px-4 py-3 rounded-xl transition-all group hover:bg-slate-800/50 border border-transparent hover:border-slate-800 active:scale-[0.98]">
+              <div class="flex flex-col min-w-0">
+                <span class="text-sm font-semibold text-slate-200 truncate group-hover:text-brand-400 transition-colors">
+                  {{ item.prompt }}
+                </span>
+                <div class="flex items-center space-x-2 mt-1">
+                   <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{{ item.createdAt | date:'shortTime' }}</span>
+                   <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+                   <span class="text-[10px] font-bold text-slate-600 uppercase truncate tracking-tighter">{{ item.response.substring(0, 20) }}...</span>
+                </div>
+              </div>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Quick Stats / Status -->
+      <div class="px-4 py-6 bg-slate-800/30 rounded-2xl border border-slate-800/50">
+         <div class="flex items-center justify-between mb-4">
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Environment</span>
+            <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+         </div>
+         <div class="space-y-3">
+            <div class="flex justify-between items-center text-xs">
+               <span class="text-slate-400">Ollama Status</span>
+               <span class="text-emerald-400 font-bold">Active</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+               <span class="text-slate-400">Local Models</span>
+               <span class="text-slate-200 font-bold">{{ chatService.models().length }}</span>
+            </div>
+         </div>
       </div>
     </div>
   `

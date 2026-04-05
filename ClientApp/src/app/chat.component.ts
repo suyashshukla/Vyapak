@@ -2,78 +2,121 @@ import { Component, inject, signal, OnInit, effect, viewChild, ElementRef } from
 import { CommonModule } from '@angular/common';
 import { ChatService, ChatMessage } from './chat.service';
 import { FormsModule } from '@angular/forms';
+import { MarkdownPipe } from './markdown.pipe';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MarkdownPipe],
   template: `
-    <div class="flex flex-col h-full bg-slate-50 rounded-lg shadow-sm overflow-hidden">
-      <!-- Model Selection -->
-      <div class="p-2 bg-white border-b border-slate-200 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <label class="text-xs font-semibold text-slate-500 uppercase">Model:</label>
-          <select 
-            [ngModel]="selectedModel()" 
-            (ngModelChange)="selectedModel.set($event)"
-            class="text-sm border-none bg-slate-50 rounded px-2 py-1 focus:ring-1 focus:ring-primary-500 outline-none"
-          >
-            @for (model of chatService.models(); track model) {
-              <option [value]="model">{{ model }}</option>
-            }
-          </select>
-        </div>
-      </div>
-
-      <!-- Chat Messages -->
-      <div class="flex-1 overflow-y-auto p-4 space-y-4" #scrollContainer>
+    <div class="flex flex-col h-full relative bg-white">
+      <!-- Messages List -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth" #scrollContainer>
         @if (chatService.history().length === 0) {
-          <div class="flex flex-col items-center justify-center h-full text-slate-400 space-y-2">
-            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <p>Start a new conversation with Ollama</p>
+          <div class="max-w-3xl mx-auto h-full flex flex-col items-center justify-center space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div class="text-center space-y-4">
+               <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-brand-100">
+                  <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+               </div>
+               <h1 class="text-4xl font-bold text-slate-900 tracking-tight">How can I help you today?</h1>
+               <p class="text-slate-500 text-lg max-w-lg mx-auto leading-relaxed">Vyapak AI is connected to your local Ollama server. Ask anything or choose a suggestion below.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              @for (suggestion of suggestions; track suggestion.title) {
+                <button 
+                  (click)="prompt.set(suggestion.text); sendPrompt()"
+                  class="p-6 text-left bg-slate-50 border border-slate-200 rounded-2xl hover:border-brand-400 hover:bg-brand-50/30 transition-all group shadow-sm hover:shadow-md"
+                >
+                  <h3 class="font-bold text-slate-900 mb-1 group-hover:text-brand-700">{{ suggestion.title }}</h3>
+                  <p class="text-sm text-slate-500 leading-relaxed">{{ suggestion.description }}</p>
+                </button>
+              }
+            </div>
           </div>
         }
-        @for (msg of chatService.history(); track msg.id) {
-          <div class="flex flex-col space-y-1">
-            <div class="self-end bg-primary-600 text-white px-4 py-2 rounded-2xl rounded-tr-none max-w-[80%] shadow-sm">
-              {{ msg.prompt }}
+
+        <div class="max-w-4xl mx-auto w-full space-y-8">
+          @for (msg of chatService.history(); track msg.id) {
+            <!-- User Message -->
+            <div class="flex flex-col items-end group">
+              <div class="chat-bubble-user">
+                {{ msg.prompt }}
+              </div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 mr-2 opacity-0 group-hover:opacity-100 transition-opacity">You</span>
             </div>
-            <div class="self-start bg-white border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm mt-2 whitespace-pre-wrap">
-              {{ msg.response }}
+
+            <!-- AI Message -->
+            <div class="flex flex-col items-start group">
+              <div class="w-full flex space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 mt-1">
+                  <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
+                <div class="flex-1 space-y-3">
+                  <div class="chat-bubble-ai markdown-content w-full" [innerHTML]="msg.response | markdown | async"></div>
+                  <div class="flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button (click)="copyToClipboard(msg.response)" class="text-[10px] font-bold text-slate-400 hover:text-brand-600 uppercase tracking-widest flex items-center space-x-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                      <span>Copy</span>
+                    </button>
+                    <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ msg.createdAt | date:'shortTime' }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        }
+          }
+        </div>
+
         @if (chatService.loading()) {
-          <div class="flex items-center space-x-2 p-2">
-            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-primary-500 rounded-full animate-bounce delay-100"></div>
-            <div class="w-2 h-2 bg-primary-600 rounded-full animate-bounce delay-200"></div>
+          <div class="max-w-4xl mx-auto w-full flex space-x-4 animate-pulse">
+            <div class="flex-shrink-0 w-8 h-8 bg-slate-50 rounded-lg border border-slate-100"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 bg-slate-50 rounded w-3/4"></div>
+              <div class="h-4 bg-slate-50 rounded w-1/2"></div>
+            </div>
           </div>
         }
       </div>
 
-      <!-- Input Area -->
-      <div class="p-4 bg-white border-t border-slate-200">
-        <form (submit)="sendPrompt()" class="flex space-x-2">
-          <input 
-            type="text" 
-            [ngModel]="prompt()" 
-            (ngModelChange)="prompt.set($event)"
-            name="prompt"
-            placeholder="Ask something..."
-            class="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            [disabled]="chatService.loading()"
-          />
-          <button 
-            type="submit"
-            [disabled]="!prompt().trim() || chatService.loading()"
-            class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Send
-          </button>
-        </form>
+      <!-- Floating Input Area -->
+      <div class="p-6 bg-white border-t border-slate-100">
+        <div class="max-w-4xl mx-auto relative group">
+          <form (submit)="sendPrompt()" class="relative">
+            <textarea 
+              [ngModel]="prompt()" 
+              (ngModelChange)="prompt.set($event)"
+              name="prompt"
+              rows="1"
+              placeholder="Message Vyapak AI..."
+              (keydown.enter)="$event.preventDefault(); sendPrompt()"
+              class="w-full px-6 py-4 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none transition-all placeholder:text-slate-400 font-medium"
+              [disabled]="chatService.loading()"
+            ></textarea>
+            
+            <div class="absolute right-3 bottom-3 flex items-center space-x-2">
+               <div class="flex flex-col items-end mr-3">
+                  <select 
+                    [ngModel]="selectedModel()" 
+                    (ngModelChange)="selectedModel.set($event)"
+                    class="text-[10px] font-bold text-slate-400 uppercase bg-transparent border-none focus:ring-0 cursor-pointer hover:text-brand-600 transition-colors"
+                  >
+                    @for (model of chatService.models(); track model) {
+                      <option [value]="model">{{ model }}</option>
+                    }
+                  </select>
+               </div>
+
+               <button 
+                  type="submit"
+                  [disabled]="!prompt().trim() || chatService.loading()"
+                  class="w-10 h-10 bg-brand-600 text-white rounded-xl flex items-center justify-center hover:bg-brand-700 transition-all disabled:opacity-30 disabled:grayscale shadow-lg shadow-brand-500/20 active:scale-90"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                </button>
+            </div>
+          </form>
+          <p class="text-[10px] text-center text-slate-400 mt-3 uppercase tracking-widest font-bold">Vyapak AI may provide inaccurate info. Verify important facts.</p>
+        </div>
       </div>
     </div>
   `
@@ -84,8 +127,14 @@ export class ChatComponent implements OnInit {
   selectedModel = signal('');
   scrollContainer = viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
 
+  suggestions = [
+    { title: 'Explain Quantum', description: 'What is quantum entanglement in simple terms?', text: 'Explain quantum entanglement like I am 5 years old.' },
+    { title: 'Code Review', description: 'Help me optimize this JavaScript function.', text: 'Can you review this code for performance: \n\n const arr = [1,2,3]; \n arr.map(x => x * 2);' },
+    { title: 'Write Email', description: 'Draft a professional follow-up email.', text: 'Write a professional follow-up email after a job interview for a Software Engineer position.' },
+    { title: 'Creative Idea', description: 'Give me 5 blog post titles for AI tech.', text: 'Generate 5 catchy blog post titles about the future of local LLMs like Ollama.' }
+  ];
+
   constructor() {
-    // Effect to select the first model automatically
     effect(() => {
       const models = this.chatService.models();
       if (models.length > 0 && !this.selectedModel()) {
@@ -93,12 +142,10 @@ export class ChatComponent implements OnInit {
       }
     });
 
-    // Effect to scroll to the bottom when history changes
     effect(() => {
       const history = this.chatService.history();
       if (history.length > 0) {
-        // Wait for DOM update
-        setTimeout(() => this.scrollToBottom(), 0);
+        setTimeout(() => this.scrollToBottom(), 100);
       }
     });
   }
@@ -112,6 +159,10 @@ export class ChatComponent implements OnInit {
     if (el) {
       el.scrollTop = el.scrollHeight;
     }
+  }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text);
   }
 
   sendPrompt() {
